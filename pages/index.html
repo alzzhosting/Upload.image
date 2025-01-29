@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+</head>
+<body>
+    <h1>Upload File ke Vercel dan Cloudinary</h1>
+
+    <form id="fileForm" enctype="multipart/form-data">
+        <input type="file" name="fileToUpload" id="fileUpload" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('fileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('fileUpload');
+            const file = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append('fileToUpload', file);
+
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.fileUrl) {
+                    document.getElementById('result').textContent = `File berhasil di-upload! Link: ${data.fileUrl}`;
+                } else {
+                    document.getElementById('result').textContent = 'Gagal meng-upload file.';
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading file:', error);
+                document.getElementById('result').textContent = 'Terjadi kesalahan saat meng-upload file.';
+            });
+        });
+    </script>
+</body>
+  </html>
